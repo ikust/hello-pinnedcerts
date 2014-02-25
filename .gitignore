@@ -27,3 +27,9 @@ proguard/
 *.ipr
 *.iws
 .idea/
+
+# Gradle 
+.gradle/
+
+#Mac files
+.DS_Store
