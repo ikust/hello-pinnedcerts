@@ -2,6 +2,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="co.infinum.https.MainActivity" >
+
+    <item android:id="@+id/action_apache"
+        android:title="@string/apache_request"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_retrofit"
+        android:title="@string/retrofit_request"
+        app:showAsAction="never" />
     
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"

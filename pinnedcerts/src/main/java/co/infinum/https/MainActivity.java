@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * Activity that demonstrates the use of HttpClientBuilder and RetrofitClientBuilder.
+ */
 public class MainActivity extends ActionBarActivity {
 
     @Override
@@ -16,22 +19,39 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
+    private void makeApacheRequest() {
+        HttpClientBuilder builder = new HttpClientBuilder()
+                .setConnectionTimeout(10000)
+                .setSocketTimeout(60000)
+
+    }
+
+    private void makeRetrofitRequest() {
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+
+        switch(id) {
+            case R.id.action_apache:
+
+                return true;
+
+            case R.id.action_retrofit:
+
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
 }
