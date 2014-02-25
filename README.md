@@ -34,3 +34,27 @@ keytool -importcert -v -trustcacerts -file "mycertfile.pem" -alias ca -keystore 
 Use -file argument to specify .pem, .cert or .crt certificate file. Output keystore is specified usting -keystore argument. Path to Bouncy Castle .jar must be provided with -providerpath argument. Finally password for the generated keystore is set with -storepass argument.
 
 ## Pinning the certificate to DefaultHttpClient
+
+Using trial and error it has been established that only .bks keystores can be used for certificate pinning. Keystore file must be placed in **res/raw** folder in a file without extension (in order to be able to reference it with **R.raw**).
+
+The following snippet demonstrates loading a keystore: 
+```java
+InputStream in = resources.openRawResource(certificateRawResource);
+
+keyStore = KeyStore.getInstance("BKS");
+keyStore.load(resourceStream, password);
+```
+When creating an instance of DefaultHttpClient that keystore can be used to pin the certificates that it contains by adding a scheme as follows (the code is simplified in order to give you the basic idea): 
+```java
+HttpParams httpParams = new BasicHttpParams();
+
+SchemeRegistry schemeRegistry = new SchemeRegistry();
+schemeRegistry.register(new Scheme("https", new SSLSocketFactory(keyStore), 443));
+
+ThreadSafeClientConnManager clientMan = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
+
+httpClient = new DefaultHttpClient(clientMan, httpParams);
+```
+The constructed httpClient will only allow requests to a hosts that are signed with the certificates provided in keystore file. 
+
+
