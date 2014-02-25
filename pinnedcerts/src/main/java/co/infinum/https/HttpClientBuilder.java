@@ -1,5 +1,7 @@
 package co.infinum.https;
 
+import android.content.res.Resources;
+
 import org.apache.http.client.CookieStore;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -97,6 +99,13 @@ public class HttpClientBuilder {
 
         keyStore = KeyStore.getInstance(BOUNCY_CASTLE);
         keyStore.load(resourceStream, password);
+
+        return this;
+    }
+
+    public HttpClientBuilder pinCertificates(Resources resources, int certificateRawResource, char[] password) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+        InputStream in = resources.openRawResource(certificateRawResource);
+        pinCertificates(in, password);
 
         return this;
     }

@@ -1,5 +1,7 @@
 package co.infinum.https;
 
+import android.content.res.Resources;
+
 import org.apache.http.client.CookieStore;
 import org.apache.http.conn.scheme.SocketFactory;
 
@@ -39,6 +41,12 @@ public class RetrofitClientBuilder {
 
     public RetrofitClientBuilder pinCertificates(InputStream resourceStream, char[] password) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         httpClientBuilder.pinCertificates(resourceStream, password);
+
+        return this;
+    }
+
+    public RetrofitClientBuilder pinCertifictes(Resources resources, int certificateRawResource, char[] password) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+        httpClientBuilder.pinCertificates(resources, certificateRawResource, password);
 
         return this;
     }
