@@ -57,4 +57,4 @@ httpClient = new DefaultHttpClient(clientMan, httpParams);
 ```
 The constructed httpClient will only allow requests to a hosts that are signed with the certificates provided in keystore file. 
 
-
+Some additional information on certificate pinning in Android can be found here: http://nelenkov.blogspot.com/2012/12/certificate-pinning-in-android-42.html
