@@ -35,7 +35,7 @@ Use -file argument to specify .pem, .cert or .crt certificate file. Output keyst
 
 ## Pinning the certificate to DefaultHttpClient
 
-Using trial and error it has been established that only .bks keystores can be used for certificate pinning. Keystore file must be placed in **res/raw** folder in a file without extension (in order to be able to reference it with **R.raw**).
+Using trial and error it has been established that only .bks keystores can be used for certificate pinning. Keystore file must be placed in **res/raw** folder.
 
 The following snippet demonstrates loading a keystore: 
 ```java
@@ -57,7 +57,8 @@ httpClient = new DefaultHttpClient(clientMan, httpParams);
 ```
 The constructed httpClient will only allow requests to a hosts that are signed with the certificates provided in keystore file. 
 
-Some additional information on certificate pinning in Android can be found here: http://nelenkov.blogspot.com/2012/12/certificate-pinning-in-android-42.html
+Some additional information on certificate pinning in Android can be found here: 
+http://nelenkov.blogspot.com/2012/12/certificate-pinning-in-android-42.html
 
 ## Using Builder classes provided in example
 
