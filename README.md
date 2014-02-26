@@ -28,7 +28,7 @@ After you've obtained a certificate it will usualy be in .pem or .cert format. I
 In order to convert use the following command: 
 
 ```shell
-keytool -importcert -v -trustcacerts -file "mycertfile.pem" -alias ca -keystore "keystore.bks" -provider org.bouncycastle.jce.provider.BouncyCastleProvider -providerpath "bcprov-jdk16-145.jar" -storetype BKS -storepass test  
+keytool -importcert -v -trustcacerts -file "mycertfile.pem" -alias ca -keystore "keystore.bks" -provider org.bouncycastle.jce.provider.BouncyCastleProvider -providerpath "bcprov-jdk16-145.jar" -storetype BKS -storepass test
 ```
 
 Use -file argument to specify .pem, .cert or .crt certificate file. Output keystore is specified usting -keystore argument. Path to Bouncy Castle .jar must be provided with -providerpath argument. Finally password for the generated keystore is set with -storepass argument.
@@ -58,3 +58,34 @@ httpClient = new DefaultHttpClient(clientMan, httpParams);
 The constructed httpClient will only allow requests to a hosts that are signed with the certificates provided in keystore file. 
 
 Some additional information on certificate pinning in Android can be found here: http://nelenkov.blogspot.com/2012/12/certificate-pinning-in-android-42.html
+
+## Using Builder classes provided in example
+
+In order to simplify certificate pinning to HTTP client, two builder classes are supplied in example. They can be used to easily create new instances of HTTP client with pinned certificates. 
+
+In order to create a new instance of DefaultHttpClient you can use **HttpClientBuilder** class: 
+```java
+DefaultHttpClient httpClient = new HttpClientBuilder()
+  .setConnectionTimeout(10000) //timeout until a connection is etablished in ms; zero means no timeout
+  .setSocketTimeout(60000) //timeout for waiting for data in ms (socket timeout); zero means no timeout
+  .setHttpPort(80) //sets the port for HTTP connections, default is 80
+  .setHttpsPort(443) //sets the port for HTTPS connections, default is 443
+  .setCookieStore(new BasicCookieStore()) //assigns a cookie store, BasicCookieStore is assigned by default
+  .pinCertificates(getResources(), R.raw.keystore, STORE_PASS) //pins the certificate from raw resources
+  .build();
+```
+
+If you are using Retrofit library, you can create DefaultHttpClient that can be used with retrofit by using **RetrofitClientBuilder** class:
+
+```java
+Client.Provider client = new RetrofitClientBuilder()
+  .pinCertificates(getResources(), R.raw.keystore, STORE_PASS) //pins the certificate from raw resources
+  .build();
+
+RestAdapter restAdapter = new RestAdapter.Builder()
+  .setServer("https://api.github.com")
+  .setClient(client)
+  .build();
+```
+
+It will build a Client.Provider that can be assigned to RestAdapter with setClient() method.
