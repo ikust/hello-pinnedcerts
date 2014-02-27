@@ -11,13 +11,15 @@ There are three steps in the process:
 
 ## Obtaining a .pem certificate for a site
 
-The easiest way to do it is using OpenSSL command line tool. The following command retreives certificate for *api.github.com*:
+One way to do it is from Firefox browser. The method is described <a href="http://superuser.com/a/97203">here</a>. This  will store the entire certificate chain for the host and it is the recommended method.
+
+Another way is using OpenSSL command line tool. The following command retreives certificate for *api.github.com*:
 
 ```shell
 openssl s_client -showcerts -connect api.github.com:443 </dev/null 2>/dev/null|openssl x509 -outform PEM >mycertfile.pem
 ```
 
-Replace *api.github.com* with the hostname of the host you wish to retreive certificate for. Certificate will be stored in *mycertfile.pem* in current directory. You can replace that with the file you desire.
+Replace *api.github.com* with the hostname of the host you wish to retreive certificate for. Certificate will be stored in *mycertfile.pem* in current directory. You can replace that with the file you desire. However, using this command will only fetch the certificate for the host itself not the whole certificate chain. This will still work, but for additional security use a method that will extract the whole certificate chain.
 
 More info on OpenSSL can be found on: https://www.openssl.org/
  
