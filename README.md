@@ -89,4 +89,4 @@ RestAdapter restAdapter = new RestAdapter.Builder()
   .build();
 ```
 
-It will build a Client.Provider that can be assigned to RestAdapter with setClient() method.
+It will build a **Client.Provider** that can be assigned to RestAdapter with setClient() method. For more details check the code and comments in <a href="https://github.com/ikust/hello-pinnedcerts/blob/master/pinnedcerts/src/main/java/co/infinum/https/MainActivity.java">MainActivity.java</a>.
