@@ -33,3 +33,6 @@ proguard/
 
 #Mac files
 .DS_Store
+
+#BKS provider
+bcprov-jdk16-145.jar
