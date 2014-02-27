@@ -11,8 +11,8 @@
         android:title="@string/retrofit_request"
         app:showAsAction="never" />
     
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    <item android:id="@+id/action_not_allowed"
+        android:title="@string/action_other"
         android:orderInCategory="100"
         app:showAsAction="never" />
 </menu>

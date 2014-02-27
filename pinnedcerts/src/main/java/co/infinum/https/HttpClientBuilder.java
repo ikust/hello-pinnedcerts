@@ -1,7 +1,6 @@
 package co.infinum.https;
 
 import android.content.res.Resources;
-import android.util.Log;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -141,7 +140,6 @@ public class HttpClientBuilder {
         schemeRegistry.register(new Scheme(HTTP_SCHEME, PlainSocketFactory.getSocketFactory(), httpPort));
 
         if (!ignoreHttpsCretificates && keyStore != null) {
-            Log.d("Builder", "using pinned certificates");
             try {
                 schemeRegistry.register(new Scheme(HTTPS_SCHEME, new SSLSocketFactory(keyStore), httpsPort));
             } catch (KeyManagementException e) {

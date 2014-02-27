@@ -45,7 +45,7 @@ public class RetrofitClientBuilder {
         return this;
     }
 
-    public RetrofitClientBuilder pinCertifictes(Resources resources, int certificateRawResource, char[] password) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    public RetrofitClientBuilder pinCertificates(Resources resources, int certificateRawResource, char[] password) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
         httpClientBuilder.pinCertificates(resources, certificateRawResource, password);
 
         return this;

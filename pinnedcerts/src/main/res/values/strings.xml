@@ -6,5 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="apache_request">Apache request</string>
     <string name="retrofit_request">Retrofit request</string>
+    <string name="welcome_label"><![CDATA[Go to menu -> Apache request / Retrofit Request]]></string>
+    <string name="action_other">Apache - other host</string>
 
 </resources>
