@@ -78,7 +78,7 @@ DefaultHttpClient httpClient = new HttpClientBuilder()
   .build();
 ```
 
-If you are using Retrofit library, you can create DefaultHttpClient that can be used with retrofit by using **RetrofitClientBuilder** class:
+If you are using Retrofit library, you can create <a href="http://square.github.io/okhttp/">OkHttpClient</a> that can be used with retrofit by using **RetrofitClientBuilder** class:
 
 ```java
 Client.Provider client = new RetrofitClientBuilder()
@@ -91,4 +91,6 @@ RestAdapter restAdapter = new RestAdapter.Builder()
   .build();
 ```
 
-It will build a **Client.Provider** that can be assigned to RestAdapter with setClient() method. For more details check the code and comments in <a href="https://github.com/ikust/hello-pinnedcerts/blob/master/pinnedcerts/src/main/java/co/infinum/https/MainActivity.java">MainActivity.java</a>.
+It will build a **OkClient** that can be assigned to RestAdapter with setClient() method. If you wish to use Apache's DefaultHttpClient with Retrofit use **RetrofitApacheClientBuilder** instead. There is a known bug with this client when server returns a gzip encoded resonse, so use this builder only if you're **not using gzip encoding**.
+
+For more details check the code and comments in <a href="https://github.com/ikust/hello-pinnedcerts/blob/master/pinnedcerts/src/main/java/co/infinum/https/MainActivity.java">MainActivity.java</a>.
