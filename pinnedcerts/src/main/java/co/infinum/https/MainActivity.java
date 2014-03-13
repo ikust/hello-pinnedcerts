@@ -12,8 +12,10 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
 import co.infinum.https.retrofit.GitHubService;
@@ -23,24 +25,24 @@ import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
-import retrofit.client.Client;
+import retrofit.client.OkClient;
 import retrofit.client.Response;
 
 /**
- * Activity that demonstrates the use of HttpClientBuilder and RetrofitClientBuilder. The main idea
+ * Activity that demonstrates the use of HttpClientBuilder and RetrofitApacheClientBuilder. The main idea
  * is to show how to pin certificates to Apache and Retrofit clients and that requests to unauthorized
  * host's will be forbidden.
- * <p>
+ * <p/>
  * There are three examples that can be run from app by using options in the actionbar menu item.
  * <ul>
- *  <li>The first action demonstrates how to use HttpClientBuilder and make a valid request to the
- *  host whose certificate is pinned</li>
- *  <li>The second action demonstrates how to use RetrofitClientBuilder and make a valid request to
- *  the host whose certificate is pinned</li>
- *  <li>The last action demonstrates what happens if a request is being meade to a host signed with
- *  a certificate that isn't pinned</li>
+ * <li>The first action demonstrates how to use HttpClientBuilder and make a valid request to the
+ * host whose certificate is pinned</li>
+ * <li>The second action demonstrates how to use RetrofitClientBuilder and make a valid request to
+ * the host whose certificate is pinned</li>
+ * <li>The last action demonstrates what happens if a request is being meade to a host signed with
+ * a certificate that isn't pinned</li>
  * </ul>
- * <p>
+ * <p/>
  * As a side note, EventBus library has been used to simplify callback from the Apache client.
  */
 public class MainActivity extends ActionBarActivity {
@@ -78,7 +80,6 @@ public class MainActivity extends ActionBarActivity {
 
         statusTextView = (TextView) findViewById(R.id.statusTextView);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,12 +155,8 @@ public class MainActivity extends ActionBarActivity {
      */
     private void makeRetrofitRequest() {
         try {
-            Client.Provider retrofitClient = new RetrofitClientBuilder()
+            OkClient retrofitClient = new RetrofitClientBuilder()
                     .setConnectionTimeout(10000)
-                    .setSocketTimeout(60000)
-                    .setHttpPort(80)
-                    .setHttpsPort(443)
-                    .setCookieStore(new BasicCookieStore())
                     .pinCertificates(getResources(), R.raw.keystore, STORE_PASS)
                     .build();
 
@@ -191,6 +188,10 @@ public class MainActivity extends ActionBarActivity {
         } catch (KeyStoreException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
             e.printStackTrace();
         }
     }
