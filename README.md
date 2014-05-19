@@ -93,3 +93,7 @@ RestAdapter restAdapter = new RestAdapter.Builder()
 ```
 
 It will build a **Client.Provider** that can be assigned to RestAdapter with setClient() method. For more details check the code and comments in <a href="https://github.com/ikust/hello-pinnedcerts/blob/master/pinnedcerts/src/main/java/co/infinum/https/MainActivity.java">MainActivity.java</a>.
+
+## License
+
+Copyright (c) 2014 Ivan Kušt. See the LICENSE.txt file for license rights and limitations (MIT).
