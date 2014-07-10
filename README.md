@@ -25,12 +25,13 @@ More info on OpenSSL can be found on: https://www.openssl.org/
  
 ## Converting to a .bks keystore
 
-After you've obtained a certificate it will usualy be in .pem or .cert format. In order to convert it to .bks format you will first need to obtain a .jar that contains *Bouncy Castle* implementation. A version that has been tested can be downloaded from: Download bouncycastle JAR from http://repo2.maven.org/maven2/org/bouncycastle/bcprov-ext-jdk15on/1.46/bcprov-ext-jdk15on-1.46.jar
+After you've obtained a certificate it will usualy be in .pem or .cert format. In order to convert it to .bks format you will first need to obtain a .jar that contains *Bouncy Castle* implementation. A version that has been tested can be downloaded from: Download bouncycastle JAR from:
+http://repo2.maven.org/maven2/org/bouncycastle/bcprov-ext-jdk15on/1.46/bcprov-ext-jdk15on-1.46.jar
 
 In order to convert use the following command: 
 
 ```shell
-keytool -importcert -v -trustcacerts -file "mycertfile.pem" -alias ca -keystore "keystore.bks" -provider org.bouncycastle.jce.provider.BouncyCastleProvider -providerpath "bcprov-jdk16-145.jar" -storetype BKS -storepass test
+keytool -importcert -v -trustcacerts -file "mycertfile.pem" -alias ca -keystore "keystore.bks" -provider org.bouncycastle.jce.provider.BouncyCastleProvider -providerpath "bcprov-jdk16-145.jar" -storetype BKS -storepass testing
 ```
 
 Use -file argument to specify .pem, .cert or .crt certificate file. Output keystore is specified usting -keystore argument. Path to Bouncy Castle .jar must be provided with -providerpath argument. Finally password for the generated keystore is set with -storepass argument.
@@ -78,7 +79,7 @@ DefaultHttpClient httpClient = new HttpClientBuilder()
   .build();
 ```
 
-If you are using Retrofit library, you can create <a href="http://square.github.io/okhttp/">OkHttpClient</a> that can be used with retrofit by using **RetrofitClientBuilder** class:
+If you are using Retrofit library, you can create DefaultHttpClient that can be used with retrofit by using **RetrofitClientBuilder** class:
 
 ```java
 Client.Provider client = new RetrofitClientBuilder()
@@ -91,6 +92,8 @@ RestAdapter restAdapter = new RestAdapter.Builder()
   .build();
 ```
 
-It will build a **OkClient** that can be assigned to RestAdapter with setClient() method. If you wish to use Apache's DefaultHttpClient with Retrofit use **RetrofitApacheClientBuilder** instead. There is a known bug with this client when server returns a gzip encoded resonse, so use this builder only if you're **not using gzip encoding**.
+It will build a **Client.Provider** that can be assigned to RestAdapter with setClient() method. For more details check the code and comments in <a href="https://github.com/ikust/hello-pinnedcerts/blob/master/pinnedcerts/src/main/java/co/infinum/https/MainActivity.java">MainActivity.java</a>.
 
-For more details check the code and comments in <a href="https://github.com/ikust/hello-pinnedcerts/blob/master/pinnedcerts/src/main/java/co/infinum/https/MainActivity.java">MainActivity.java</a>.
+## License
+
+Copyright (c) 2014 Ivan Kušt. See the LICENSE.txt file for license rights and limitations (MIT).

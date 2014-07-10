@@ -59,7 +59,7 @@ public class HttpClientBuilder {
      * Beware that this could pose a security risk and should be used only for
      * development purposes.
      */
-    protected boolean ignoreHttpsCretificates = false;
+    protected boolean ignoreHttpsCertificates = false;
 
     /**
      * KeyStore containing certificates for HTTPS requests.
@@ -95,7 +95,7 @@ public class HttpClientBuilder {
     }
 
     public HttpClientBuilder pinCertificates(InputStream resourceStream, char[] password) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
-        ignoreHttpsCretificates = false;
+        ignoreHttpsCertificates = false;
 
         keyStore = KeyStore.getInstance(BOUNCY_CASTLE);
         keyStore.load(resourceStream, password);
@@ -111,7 +111,7 @@ public class HttpClientBuilder {
     }
 
     public HttpClientBuilder ignoreCertificates() {
-        ignoreHttpsCretificates = true;
+        ignoreHttpsCertificates = true;
 
         return this;
     }
@@ -139,7 +139,7 @@ public class HttpClientBuilder {
 
         schemeRegistry.register(new Scheme(HTTP_SCHEME, PlainSocketFactory.getSocketFactory(), httpPort));
 
-        if (!ignoreHttpsCretificates && keyStore != null) {
+        if (!ignoreHttpsCertificates && keyStore != null) {
             try {
                 schemeRegistry.register(new Scheme(HTTPS_SCHEME, new SSLSocketFactory(keyStore), httpsPort));
             } catch (KeyManagementException e) {
@@ -157,7 +157,7 @@ public class HttpClientBuilder {
 
         ThreadSafeClientConnManager clientMan = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
-        if (ignoreHttpsCretificates) {
+        if (ignoreHttpsCertificates) {
             httpClient = new IgnorantHttpClient();
         } else {
             httpClient = new DefaultHttpClient(clientMan, httpParams);
