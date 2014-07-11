@@ -118,16 +118,16 @@ public class MainActivity extends ActionBarActivity {
             EventBus.getDefault().post(response);
         } catch (IOException e) {
             e.printStackTrace();
-            EventBus.getDefault().post(e);
+            EventBus.getDefault().post(request.getURI().toString()+" "+e.getMessage());
         } catch (CertificateException e) {
             e.printStackTrace();
-            EventBus.getDefault().post(e);
+            EventBus.getDefault().post(request.getURI().toString()+" "+e.getMessage());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            EventBus.getDefault().post(e);
+            EventBus.getDefault().post(request.getURI().toString()+" "+e.getMessage());
         } catch (KeyStoreException e) {
             e.printStackTrace();
-            EventBus.getDefault().post(e);
+            EventBus.getDefault().post(request.getURI().toString()+" "+e.getMessage());
         }
     }
 
@@ -145,9 +145,10 @@ public class MainActivity extends ActionBarActivity {
      *
      * @param e
      */
-    public void onEventMainThread(IOException e) {
-        statusTextView.setText(e.toString());
+    public void onEventMainThread(String e) {
+        statusTextView.setText(e);
     }
+
 
     /**
      * Executes Retrofit request.
@@ -181,7 +182,7 @@ public class MainActivity extends ActionBarActivity {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    statusTextView.setText(error.getMessage());
+                    statusTextView.setText(TEST_URL+ " "+error.getMessage());
                 }
             });
         } catch (CertificateException e) {
