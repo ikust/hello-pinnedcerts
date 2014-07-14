@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import retrofit.client.OkClient;
@@ -50,13 +49,12 @@ public class RetrofitClientBuilder {
         keyStore.load(resourceStream, password);
 
         KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        TrustManager[] trustManagers = {new CustomTrustManager(keyStore)};
 
         kmf.init(keyStore, password);
-        tmf.init(keyStore);
 
         SSLContext sslContext = SSLContext.getInstance(SSLSocketFactory.TLS);
-        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+        sslContext.init(kmf.getKeyManagers(), trustManagers, null);
 
         okHttpClient.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
         okHttpClient.setSslSocketFactory(sslContext.getSocketFactory());
