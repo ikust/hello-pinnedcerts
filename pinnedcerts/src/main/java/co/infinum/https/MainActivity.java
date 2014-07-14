@@ -162,7 +162,7 @@ public class MainActivity extends ActionBarActivity {
                     .build();
 
             RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setServer(TEST_URL)
+                    .setEndpoint(TEST_URL)
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setLog(new Logger())
                     .setClient(retrofitClient)
