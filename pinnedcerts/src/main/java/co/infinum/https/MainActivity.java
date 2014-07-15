@@ -17,6 +17,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.HashMap;
+import java.util.Map;
 
 import co.infinum.https.retrofit.GitHubService;
 import co.infinum.https.retrofit.Logger;
@@ -116,7 +118,10 @@ public class MainActivity extends ActionBarActivity {
 
             HttpResponse response = httpClient.execute(request);
 
-            EventBus.getDefault().post(response);
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("request", request);
+            data.put("response", response);
+            EventBus.getDefault().post(data);
         } catch (IOException e) {
             e.printStackTrace();
             EventBus.getDefault().post(request.getURI().toString()+" "+e.getMessage());
@@ -135,10 +140,13 @@ public class MainActivity extends ActionBarActivity {
     /**
      * Called after Apache request was completed. Shows status in label.
      *
-     * @param response
+     * @param data data object with request and response in it
      */
-    public void onEventMainThread(HttpResponse response) {
-        statusTextView.setText(response.getStatusLine().toString());
+    public void onEventMainThread(Map<String, Object> data) {
+          HttpGet request = (HttpGet) data.get("request");
+          HttpResponse response = (HttpResponse) data.get("response");
+
+        statusTextView.setText("Apache "+request.getURI().toString()+" "+response.getStatusLine().toString());
     }
 
     /**
@@ -147,7 +155,7 @@ public class MainActivity extends ActionBarActivity {
      * @param e
      */
     public void onEventMainThread(String e) {
-        statusTextView.setText(e);
+        statusTextView.setText("Apache "+e);
     }
 
 
@@ -170,16 +178,16 @@ public class MainActivity extends ActionBarActivity {
 
             GitHubService service = restAdapter.create(GitHubService.class);
 
-            service.getUser(USER, new Callback<User>() {
+            service.getUser(USER, "token "+this.getString(R.string.oauth_token), new Callback<User>() {
 
                 @Override
                 public void success(User user, Response response) {
-                    statusTextView.setText(response.getStatus() + " " + response.getReason());
+                    statusTextView.setText("Retrofit "+TEST_URL+" "+response.getStatus() + " " + response.getReason());
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-                    statusTextView.setText(TEST_URL+ " "+error.getMessage());
+                    statusTextView.setText("Retrofit "+TEST_URL+ " "+error.getMessage());
                 }
             });
         } catch (CertificateException e) {
@@ -201,10 +209,46 @@ public class MainActivity extends ActionBarActivity {
      * Demonstrates that a request to a host with certificate different than the pinned one will fail.
      */
     private void makeForbiddenRequest() {
-        HttpGet request = new HttpGet(FORBIDDEN_URL);
-        request.addHeader("User-Agent", "hello-pinnedcerts");
+        try {
+          OkClient retrofitClient = new RetrofitClientBuilder()
+              .setConnectionTimeout(10000)
+              .pinCertificates(getResources(), R.raw.keystore, STORE_PASS)
+              .build();
 
-        EventBus.getDefault().post(request);
+          RestAdapter restAdapter = new RestAdapter.Builder()
+              .setEndpoint(FORBIDDEN_URL)
+              .setLogLevel(RestAdapter.LogLevel.FULL)
+              .setLog(new Logger())
+              .setClient(retrofitClient)
+              .build();
+
+          GitHubService service = restAdapter.create(GitHubService.class);
+
+          service.getUser(USER, "dummy", new Callback<User>() {
+
+            @Override
+            public void success(User user, Response response) {
+              statusTextView.setText("Retrofit "+FORBIDDEN_URL+" "+response.getStatus() + " " + response.getReason());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+              statusTextView.setText("Retrofit "+FORBIDDEN_URL+ " "+error.getMessage());
+            }
+          });
+        } catch (CertificateException e) {
+          e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+          e.printStackTrace();
+        } catch (KeyStoreException e) {
+          e.printStackTrace();
+        } catch (IOException e) {
+          e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+          e.printStackTrace();
+        } catch (KeyManagementException e) {
+          e.printStackTrace();
+        }
     }
 
     @Override

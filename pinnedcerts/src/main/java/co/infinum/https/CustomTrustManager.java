@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class CustomTrustManager implements X509TrustManager {
 
-  private final X509TrustManager originalX509TrustManager;
+  private final TrustManager[] originalTrustManagers;
   private final KeyStore trustStore;
 
   /**
@@ -29,11 +29,10 @@ public class CustomTrustManager implements X509TrustManager {
   public CustomTrustManager(KeyStore trustStore) throws NoSuchAlgorithmException, KeyStoreException {
     this.trustStore = trustStore;
 
-    TrustManagerFactory originalTrustManagerFactory = TrustManagerFactory.getInstance("X509");
-    originalTrustManagerFactory.init((KeyStore) null);
+    final TrustManagerFactory originalTrustManagerFactory = TrustManagerFactory.getInstance("X509");
+    originalTrustManagerFactory.init(trustStore);
 
-    TrustManager[] originalTrustManagers = originalTrustManagerFactory.getTrustManagers();
-    originalX509TrustManager = (X509TrustManager) originalTrustManagers[0];
+    originalTrustManagers = originalTrustManagerFactory.getTrustManagers();
   }
 
   /**
@@ -65,21 +64,39 @@ public class CustomTrustManager implements X509TrustManager {
    */
   public void checkServerTrusted(X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
     try {
-      originalX509TrustManager.checkServerTrusted(chain, authType);
+      for (TrustManager originalTrustManager : originalTrustManagers) {
+        ((X509TrustManager) originalTrustManager).checkServerTrusted(chain, authType);
+      }
     } catch(CertificateException originalException) {
       try {
+        // Ordering issue?
         X509Certificate[] reorderedChain = reorderCertificateChain(chain);
-        CertPathValidator validator = CertPathValidator.getInstance("PKIX");
-        CertificateFactory factory = CertificateFactory.getInstance("X509");
-        CertPath certPath = factory.generateCertPath(Arrays.asList(reorderedChain));
-        PKIXParameters params = new PKIXParameters(trustStore);
-        params.setRevocationEnabled(false);
-        validator.validate(certPath, params);
+        if (! Arrays.equals(chain, reorderedChain)) {
+          checkServerTrusted(reorderedChain, authType);
+          return;
+        }
+        for (int i = 0; i < chain.length; i++) {
+          if (validateCert(reorderedChain[i])) {
+            return;
+          }
+        }
+        throw originalException;
       } catch(Exception ex) {
+        ex.printStackTrace();
         throw originalException;
       }
     }
 
+  }
+
+  /**
+   * Checks if we have added the certificate in the trustStore, if that's the case we trust the certificate
+   * @param x509Certificate the certificate to check
+   * @return true if we know the certificate, false otherwise
+   * @throws KeyStoreException on problems accessing the key store
+   */
+  private boolean validateCert(final X509Certificate x509Certificate) throws KeyStoreException {
+    return trustStore.getCertificateAlias(x509Certificate) != null;
   }
 
   /**
