@@ -58,7 +58,7 @@ ThreadSafeClientConnManager clientMan = new ThreadSafeClientConnManager(httpPara
 
 httpClient = new DefaultHttpClient(clientMan, httpParams);
 ```
-The constructed httpClient will only allow requests to a hosts that are signed with the certificates provided in keystore file. 
+The constructed httpClient will only allow requests to a hosts that are signed with the certificates provided in keystore file. For more details check <a href="https://github.com/ikust/hello-pinnedcerts/blob/master/pinnedcerts/src/main/java/co/infinum/https/HttpClientBuilder.java">HttpClientBuilder</a> class. For details about pinning <a href="http://square.github.io/okhttp/">OkHttpClient</a> that is used with <a href="http://square.github.io/retrofit/">Retrofit</a> check <a href="https://github.com/ikust/hello-pinnedcerts/blob/master/pinnedcerts/src/main/java/co/infinum/https/RetrofitClientBuilder.java">RetrofitClientBuilder</a>.
 
 Some additional information on certificate pinning in Android can be found here: 
 http://nelenkov.blogspot.com/2012/12/certificate-pinning-in-android-42.html
@@ -79,10 +79,12 @@ DefaultHttpClient httpClient = new HttpClientBuilder()
   .build();
 ```
 
-If you are using Retrofit library, you can create DefaultHttpClient that can be used with retrofit by using **RetrofitClientBuilder** class:
+**PLEASE NOTE:** Certificate pinning with Apache DefaultHttpClient won't work on Android 2.3.x! The reason seems to be a strange bug in specific version of BouncyCastle library used on that Android version. More about the issue <a href="https://github.com/ikust/hello-pinnedcerts/issues/2">here</a>. Thaks @delgurth for noting this.
+
+If you are using Retrofit library, you can create **OkClient** that can be used with Retrofit by using **RetrofitClientBuilder** class:
 
 ```java
-Client.Provider client = new RetrofitClientBuilder()
+OkClient client = new RetrofitClientBuilder()
   .pinCertificates(getResources(), R.raw.keystore, STORE_PASS) //pins the certificate from raw resources
   .build();
 
@@ -92,7 +94,9 @@ RestAdapter restAdapter = new RestAdapter.Builder()
   .build();
 ```
 
-It will build a **Client.Provider** that can be assigned to RestAdapter with setClient() method. For more details check the code and comments in <a href="https://github.com/ikust/hello-pinnedcerts/blob/master/pinnedcerts/src/main/java/co/infinum/https/MainActivity.java">MainActivity.java</a>.
+It will build a **OkClient** that can be assigned to RestAdapter with setClient() method. If you are using Retrofit library, but wish to use Apache client instead of OkHttp you can use **RetrofitApacheClientBuilder**.
+
+For more details check the code and comments in <a href="https://github.com/ikust/hello-pinnedcerts/blob/master/pinnedcerts/src/main/java/co/infinum/https/MainActivity.java">MainActivity.java</a>.
 
 ## License
 
