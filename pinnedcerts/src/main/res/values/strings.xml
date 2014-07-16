@@ -7,6 +7,7 @@
     <string name="apache_request">Apache request</string>
     <string name="retrofit_request">Retrofit request</string>
     <string name="welcome_label"><![CDATA[Go to menu -> Apache request / Retrofit Request]]></string>
-    <string name="action_other">Apache - other host</string>
+    <string name="action_other">Retrofit - other host</string>
+    <string name="oauth_token">YOUR_TOKEN_HERE</string>
 
 </resources>
